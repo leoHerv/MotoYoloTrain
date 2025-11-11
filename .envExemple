@@ -1,0 +1,2 @@
+PATH_DATA_IMAGES_LABELS="path_to_images_and_labels_folders"
+PATH_DATASET="path_to_dataset_directory"
