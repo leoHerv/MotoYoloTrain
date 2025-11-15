@@ -44,7 +44,7 @@ def convert_images_labels_to_dataset(path_source_raw: str, path_destination_raw:
     # Create the 'dataset.yaml' file required for YOLO training.
     create_dataset_yolo_yaml(path_source=path_dst_with_number, labels=labels)
 
-def create_destination_directory(path_destination: Path):
+def create_destination_directory(path_destination: Path) -> Path:
     """
     Creates a new directory for the dataset, ensuring its name is unique.
 

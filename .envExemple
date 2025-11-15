@@ -1,2 +1,3 @@
 PATH_DATA_IMAGES_LABELS="path_to_images_and_labels_folders"
-PATH_DATASET="path_to_dataset_directory"
+PATH_DATASET_DIR="path_to_dataset_directory"
+PATH_PROCESS_DATA_DIR="path_to_data_directory"
