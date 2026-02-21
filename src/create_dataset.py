@@ -5,7 +5,7 @@ import shutil
 import random
 import yaml
 
-def convert_images_labels_to_dataset(path_source_raw: str, path_destination_raw: str, valid_perc: int, test_perc: int, labels):
+def convert_images_labels_to_dataset(list_path_source_raw: list[str], path_destination_raw: str, valid_perc: int, test_perc: int, labels: list):
     """
     Organizes raw image and label files into a YOLO dataset structure.
 
@@ -14,32 +14,35 @@ def convert_images_labels_to_dataset(path_source_raw: str, path_destination_raw:
     directory structure, and generating the 'dataset.yaml' configuration file.
 
     Args:
-        path_source_raw (str): The path to the source directory containing 'images' and 'labels' folders.
+        list_path_source_raw (list[str]): The list of paths to the source directories containing 'images' and 'labels' folders.
         path_destination_raw (str): The path to the root directory where the new dataset will be created.
         valid_perc (int): The percentage of the dataset to be allocated for validation.
         test_perc (int): The percentage of the dataset to be allocated for testing.
         labels (list): A list of strings representing the class names for the dataset.
     """
-    path_source: Path = Path(path_source_raw)
     path_destination: Path = Path(path_destination_raw)
 
     # Create a unique root directory for the new dataset.
     path_dst_with_number = create_destination_directory(path_destination)
-    # Create subdirectories for train, valid, and test sets.
-    path_train_images_destination, path_train_labels_destination = create_destination_subdirectory(path_dst_with_number / "train")
-    path_valid_images_destination, path_valid_labels_destination = create_destination_subdirectory(path_dst_with_number / "valid")
-    path_test_images_destination, path_test_labels_destination = create_destination_subdirectory(path_dst_with_number / "test")
 
-    # Define source paths for images and labels.
-    images_path: Path = path_source / "images"
-    labels_path: Path = path_source / "labels"
-    # Get lists of image names for each dataset split.
-    names_images_train, names_images_valid, names_images_test = get_train_images_names(images_path, valid_perc, test_perc)
+    for path_source_raw in list_path_source_raw:
+        path_source: Path = Path(path_source_raw)
 
-    # Copy the files to their final destinations.
-    copy_images_and_labels_to(names_images_train, path_train_images_destination, path_train_labels_destination, images_path, labels_path)
-    copy_images_and_labels_to(names_images_valid, path_valid_images_destination, path_valid_labels_destination, images_path, labels_path)
-    copy_images_and_labels_to(names_images_test, path_test_images_destination, path_test_labels_destination, images_path, labels_path)
+        # Create subdirectories for train, valid, and test sets.
+        path_train_images_destination, path_train_labels_destination = create_destination_subdirectory(path_dst_with_number / "train")
+        path_valid_images_destination, path_valid_labels_destination = create_destination_subdirectory(path_dst_with_number / "valid")
+        path_test_images_destination, path_test_labels_destination = create_destination_subdirectory(path_dst_with_number / "test")
+
+        # Define source paths for images and labels.
+        images_path: Path = path_source / "images"
+        labels_path: Path = path_source / "labels"
+        # Get lists of image names for each dataset split.
+        names_images_train, names_images_valid, names_images_test = get_train_images_names(images_path, valid_perc, test_perc)
+
+        # Copy the files to their final destinations.
+        copy_images_and_labels_to(names_images_train, path_train_images_destination, path_train_labels_destination, images_path, labels_path)
+        copy_images_and_labels_to(names_images_valid, path_valid_images_destination, path_valid_labels_destination, images_path, labels_path)
+        copy_images_and_labels_to(names_images_test, path_test_images_destination, path_test_labels_destination, images_path, labels_path)
 
     # Create the 'dataset.yaml' file required for YOLO training.
     create_dataset_yolo_yaml(path_source=path_dst_with_number, labels=labels)
@@ -84,9 +87,12 @@ def create_destination_subdirectory(path_directory: Path):
     """
     dst_images_path = path_directory / "images"
     dst_labels_path = path_directory / "labels"
-    os.makedirs(path_directory)
-    os.makedirs(dst_images_path)
-    os.makedirs(dst_labels_path)
+    if not os.path.exists(path_directory):
+        os.makedirs(path_directory)
+    if not os.path.exists(dst_images_path):
+        os.makedirs(dst_images_path)
+    if not os.path.exists(dst_labels_path):
+        os.makedirs(dst_labels_path)
     return dst_images_path, dst_labels_path
 
 
