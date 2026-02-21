@@ -51,7 +51,7 @@ def get_box_from_obb(points_norm: list, img_w: int, img_h: int) -> (int, int, in
     return x_min, y_min, x_max, y_max
 
 
-def get_area_from_image(img_path, label_path, output_img_dir, output_label_dir, container_classes: list, in_container_classes: list) -> int:
+def get_area_from_image(img_path, label_path, output_img_dir, output_label_dir, container_classes: list[int], in_container_classes: list[int]) -> int:
     """
     Processes a single image:
     1. Reads the image and its labels (8-point format).
@@ -66,8 +66,8 @@ def get_area_from_image(img_path, label_path, output_img_dir, output_label_dir, 
         label_path: Path to the label file.
         output_img_dir: Directory to save the output images.
         output_label_dir: Directory to save the output labels.
-        container_classes (list): List of class IDs for containers.
-        in_container_classes (list): List of class IDs for objects within containers.
+        container_classes (list[int]): List of class IDs for containers.
+        in_container_classes (list[int]): List of class IDs for objects within containers.
 
     Returns:
         int: The number of crops created from the image.
@@ -76,7 +76,7 @@ def get_area_from_image(img_path, label_path, output_img_dir, output_label_dir, 
         image = cv2.imread(str(img_path))
         if image is None:
             print(f"Error: Cannot read the image : {img_path}")
-            return
+            return 0
 
         img_h, img_w = image.shape[:2]
 
@@ -96,7 +96,7 @@ def get_area_from_image(img_path, label_path, output_img_dir, output_label_dir, 
 
         if not containers_labels:
             # No container, nothing to process.
-            return
+            return 0
 
         img_name: str = img_path.stem  # Name of the file without extension.
         crop_counter: int = 0
