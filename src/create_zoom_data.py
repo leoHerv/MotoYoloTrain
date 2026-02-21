@@ -229,4 +229,4 @@ def is_label_visible(points: np.ndarray, crop_x: int, crop_y: int, crop_w: int, 
     crop_y_max = crop_y + crop_h
 
     # Checks if the label is in the crop.
-    return (max_x > crop_x) and (min_x < crop_x_max) and (max_y > crop_y) and (min_y < crop_y_max)
+    return (min_x > crop_x) and (max_x < crop_x_max) and (min_y > crop_y) and (max_y < crop_y_max)

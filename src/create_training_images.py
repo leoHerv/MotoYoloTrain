@@ -13,6 +13,7 @@ def convert_images_to_squares(input_dir: str, output_dir: str, target_size: int,
         output_dir (str): Destination directory for the processed dataset.
         target_size (int): Target size for the images.
         container_classes (list[int]): List of class IDs for containers.
+        min_box_size (int): Minimum size (width or height) for an object to be kept.
     """
     input_images_dir = os.path.join(input_dir, "images")
     input_labels_dir = os.path.join(input_dir, "labels")
@@ -69,7 +70,7 @@ def letterbox(img: np.ndarray, new_size: int, color: tuple=(0, 0, 0)) -> (np.nda
     img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
     return img, ratio, (dw, dh)
 
-def process_image_and_label(image_path: str, label_path: str, output_dir: str, target_size: int, container_classes: list[int]):
+def process_image_and_label(image_path: str, label_path: str, output_dir: str, target_size: int, container_classes: list[int], min_box_size: int = 15):
     """
     Processes a single image and its corresponding label file.
     Resizes the image with letterboxing and transforms the OBB labels.
@@ -79,8 +80,8 @@ def process_image_and_label(image_path: str, label_path: str, output_dir: str, t
         label_path (str): Path to the source label file.
         output_dir (str): Path to the output directory.
         target_size (int): Target size for the square image.
-        target_size (int): Target size for the square image.
         container_classes (list[int]): List of class IDs for containers.
+        min_box_size (int): Minimum size (width or height) for an object to be kept.
     """
     # Read image
     img = cv2.imread(image_path)
@@ -133,6 +134,13 @@ def process_image_and_label(image_path: str, label_path: str, output_dir: str, t
             # Denormalize
             points[:, 0] *= w0
             points[:, 1] *= h0
+            
+            # Calculate real dimensions
+            width = np.linalg.norm(points[0] - points[1])
+            height = np.linalg.norm(points[1] - points[2])
+            
+            if width < min_box_size or height < min_box_size:
+                continue
             
             # Apply scaling
             points *= ratio
