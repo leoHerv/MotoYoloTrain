@@ -1,6 +1,6 @@
 # MotoYoloTrain
 
- Project to train yolo models for motocross plate detection
+ Project to train yolo models for motocross plate detection.
 
 ## Goal 
 
@@ -9,9 +9,8 @@
 
 ### TODOS
 
-- Adds a script to zoom in images where its possible to correctly exploit the data.
-- Remove labels in the labels files that are not used in the training.
-- **Make two datasets** : one for the plate recognition and the other for the number recognition.
+- Fix out of image labels
+- Optimize performance
 
 ## Annotation software 
 
@@ -31,6 +30,16 @@ cuDNN last version (9.3.0) : https://developer.nvidia.com/cudnn-downloads
 The table to see which version of CUDA you need to make Pytorch work :  
 https://pytorch.org/get-started/locally/
 
+## Run
+
+Create the `.env` file and specify the paths needed for the program.  
+`.envExample` is example of what you need to specify in the `.env`.  
+
 ### Specs for training
 
 `Laptop RTX 4070` and `Ryzen 7 7745HX`
+
+## Infos 
+
+This project is mainly vibe coded with `Gemini code Assist`.
+For this project, high performance is not needed.
